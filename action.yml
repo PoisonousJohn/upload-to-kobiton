@@ -1,10 +1,11 @@
-name: 'Your name here'
-description: 'Provide a description here'
+name: 'Upload to kobiton'
+description: 'This script uploads artifact to Kobiton (kobiton.com)'
 author: 'Your name or organization here'
 inputs:
-  myInput:              # change this
-    description: 'input description here'
-    default: 'default value if applicable'
+  kobitonLogin:
+    description: 'Login to authorize kobiton requests'
+  kobitonKey:
+    description: 'Key to authorize kobiton requests'
 runs:
   using: 'node12'
   main: 'dist/index.js'
