@@ -18,8 +18,11 @@ import * as path from 'path'
 
 // shows how the runner will run a javascript action with env / stdout protocol
 test('test runs', () => {
-  console.log(`env: ${JSON.stringify(process.env)}`)
-  process.env['INPUT_MILLISECONDS'] = '500'
+  // console.log(`env: ${JSON.stringify(process.env)}`)
+  if (!process.env['INPUT_KOBITONKEY'] || !process.env['INPUT_KOBITONLOGIN']) {
+    throw 'Test needs correct INPUT_KOBITONKEY and INPUT_KOBITONLOGIN to be set'
+  }
+  process.env['INPUT_ARTIFACTPATH'] = '__tests__/test.apk'
   const ip = path.join(__dirname, '..', 'lib', 'main.js')
   const options: cp.ExecSyncOptions = {
     env: process.env

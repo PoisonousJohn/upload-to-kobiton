@@ -1,14 +1,17 @@
 import * as core from '@actions/core'
 import * as request from 'request-promise-native'
-// import {wait} from './wait'
+import {promises as fs} from 'fs'
 
 async function run(): Promise<void> {
   try {
+    const baseUri = 'https://api.kobiton.com/v1'
     const key = Buffer.from(
       `${core.getInput('kobitonLogin')}:${core.getInput('kobitonKey')}`
     ).toString('base64')
+    core.debug(`Uploading app version with app id ${core.getInput('appId')}`)
     const body = {
-      filename: 'ANNA.apk'
+      filename: 'newVersion.apk',
+      appId: core.getInput('appId')
     }
     const headers = {
       Authorization: `Basic ${key}`,
@@ -16,20 +19,29 @@ async function run(): Promise<void> {
       Accept: 'application/json'
     }
     const options = {
-      uri: 'https://api.kobiton.com/v1/apps/uploadUrl',
+      uri: `${baseUri}/apps/uploadUrl`,
       headers,
       json: body
     }
-    const response: Response = await request.post(options)
-    core.info(`Link: ${JSON.stringify(response)}`)
-    // const ms: string = core.getInput('milliseconds')
-    // core.debug(`Waiting ${ms} milliseconds ...`)
+    const {appPath, url: uploadUrl} = await request.post(options)
+    await request.put({
+      uri: uploadUrl,
+      headers: {
+        'Content-Type': 'application/octet-stream',
+        'x-amz-tagging': 'unsaved=true'
+      },
+      body: await fs.readFile(core.getInput('artifactPath'), 'binary')
+    })
+    core.info('File uploaded')
 
-    // core.debug(new Date().toTimeString())
-    // await wait(parseInt(ms, 10))
-    // core.debug(new Date().toTimeString())
+    const createVersionResp = await request.post({
+      uri: `${baseUri}/apps`,
+      headers,
+      json: {appPath}
+    })
 
-    // core.setOutput('time', new Date().toTimeString())
+    core.info('Kobiton notified about new version')
+    core.setOutput('versionId', createVersionResp.versionId)
   } catch (error) {
     core.setFailed(JSON.stringify(error))
   }

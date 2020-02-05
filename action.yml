@@ -6,6 +6,12 @@ inputs:
     description: 'Login to authorize kobiton requests'
   kobitonKey:
     description: 'Key to authorize kobiton requests'
+  artifactPath:
+    description: 'A path to a file'
+  appId:
+    description: 'App id to create version for (optional)'
+outputs:
+  versionId: 'Id of an uploaded version'
 runs:
   using: 'node12'
   main: 'dist/index.js'

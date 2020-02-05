@@ -4833,13 +4833,16 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const core = __importStar(__webpack_require__(470));
 const request = __importStar(__webpack_require__(117));
-// import {wait} from './wait'
+const fs_1 = __webpack_require__(747);
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
+            const baseUri = 'https://api.kobiton.com/v1';
             const key = Buffer.from(`${core.getInput('kobitonLogin')}:${core.getInput('kobitonKey')}`).toString('base64');
+            core.debug(`Uploading app version with app id ${core.getInput('appId')}`);
             const body = {
-                filename: 'ANNA.apk'
+                filename: 'newVersion.apk',
+                appId: core.getInput('appId')
             };
             const headers = {
                 Authorization: `Basic ${key}`,
@@ -4847,18 +4850,27 @@ function run() {
                 Accept: 'application/json'
             };
             const options = {
-                uri: 'https://api.kobiton.com/v1/apps/uploadUrl',
+                uri: `${baseUri}/apps/uploadUrl`,
                 headers,
                 json: body
             };
-            const response = yield request.post(options);
-            core.info(`Link: ${JSON.stringify(response)}`);
-            // const ms: string = core.getInput('milliseconds')
-            // core.debug(`Waiting ${ms} milliseconds ...`)
-            // core.debug(new Date().toTimeString())
-            // await wait(parseInt(ms, 10))
-            // core.debug(new Date().toTimeString())
-            // core.setOutput('time', new Date().toTimeString())
+            const { appPath, url: uploadUrl } = yield request.post(options);
+            yield request.put({
+                uri: uploadUrl,
+                headers: {
+                    'Content-Type': 'application/octet-stream',
+                    'x-amz-tagging': 'unsaved=true'
+                },
+                body: yield fs_1.promises.readFile(core.getInput('artifactPath'), 'binary')
+            });
+            core.info('File uploaded');
+            const createVersionResp = yield request.post({
+                uri: `${baseUri}/apps`,
+                headers,
+                json: { appPath }
+            });
+            core.info('Kobiton notified about new version');
+            core.setOutput('versionId', createVersionResp.versionId);
         }
         catch (error) {
             core.setFailed(JSON.stringify(error));
