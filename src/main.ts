@@ -30,7 +30,7 @@ async function run(): Promise<void> {
         'Content-Type': 'application/octet-stream',
         'x-amz-tagging': 'unsaved=true'
       },
-      body: await fs.readFile(core.getInput('artifactPath'), 'binary')
+      body: await fs.readFile(core.getInput('artifactPath'))
     })
     core.info('File uploaded')
 

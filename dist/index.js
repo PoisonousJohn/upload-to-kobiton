@@ -4861,7 +4861,7 @@ function run() {
                     'Content-Type': 'application/octet-stream',
                     'x-amz-tagging': 'unsaved=true'
                 },
-                body: yield fs_1.promises.readFile(core.getInput('artifactPath'), 'binary')
+                body: yield fs_1.promises.readFile(core.getInput('artifactPath'))
             });
             core.info('File uploaded');
             const createVersionResp = yield request.post({
