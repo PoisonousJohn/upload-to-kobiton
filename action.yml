@@ -1,6 +1,6 @@
 name: 'Upload to kobiton'
 description: 'This script uploads artifact to Kobiton (kobiton.com)'
-author: 'Your name or organization here'
+author: 'Poisonous John (Ivan Fateev)'
 inputs:
   kobitonLogin:
     description: 'Login to authorize kobiton requests'
