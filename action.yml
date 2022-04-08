@@ -8,6 +8,8 @@ inputs:
     description: 'Key to authorize kobiton requests'
   artifactPath:
     description: 'A path to a file'
+  fileName:
+    description: 'Name to call uploaded file (i.e. new_version.apk)'
   appId:
     description: 'App id to create version for (optional)'
 outputs:
