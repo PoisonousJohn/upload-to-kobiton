@@ -11,7 +11,8 @@ inputs:
   appId:
     description: 'App id to create version for (optional)'
 outputs:
-  versionId: 'Id of an uploaded version'
+  versionId:
+    description: 'Id of an uploaded version'
 runs:
   using: 'node12'
   main: 'dist/index.js'
