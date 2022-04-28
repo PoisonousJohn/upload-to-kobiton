@@ -15,4 +15,5 @@ with:
   kobitonKey: ***
   appId: ***
   artifactPath: ***
+  fileName: ***
 ```
