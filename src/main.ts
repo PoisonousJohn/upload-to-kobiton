@@ -10,7 +10,7 @@ async function run(): Promise<void> {
     ).toString('base64')
     core.debug(`Uploading app version with app id ${core.getInput('appId')}`)
     const body = {
-      filename: 'newVersion.apk',
+      filename: core.getInput('fileName'),
       appId: core.getInput('appId')
     }
     const headers = {
