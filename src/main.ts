@@ -37,7 +37,7 @@ async function run(): Promise<void> {
     const createVersionResp = await request.post({
       uri: `${baseUri}/apps`,
       headers,
-      json: {appPath}
+      json: {appPath, filename: core.getInput('fileName')}
     })
 
     core.info('Kobiton notified about new version')
